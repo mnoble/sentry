@@ -39,7 +39,6 @@ const KeyRow = createReactClass({
     projectId: PropTypes.string.isRequired,
     data: PropTypes.object.isRequired,
     access: PropTypes.object.isRequired,
-    features: PropTypes.object.isRequired,
     onToggle: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
   },
@@ -116,7 +115,7 @@ const KeyRow = createReactClass({
   },
 
   render() {
-    let {access, features, data} = this.props;
+    let {access, data} = this.props;
     let editUrl = recreateRoute(`${data.id}/`, this.props);
     let controls = [
       <Button key="edit" to={editUrl} size="small">
@@ -177,11 +176,7 @@ const KeyRow = createReactClass({
           btnText={t('Expand')}
         >
           <PanelBody>
-            <ProjectKeyCredentials
-              projectId={`${data.projectId}`}
-              data={data}
-              features={features}
-            />
+            <ProjectKeyCredentials projectId={`${data.projectId}`} data={data} />
           </PanelBody>
         </ClippedBox>
       </ClientKeyItemPanel>
@@ -264,7 +259,6 @@ export default class ProjectKeys extends AsyncView {
     let {routes, params} = this.props;
     let {orgId, projectId} = params;
     let access = getOrganizationState(this.context.organization).getAccess();
-    let features = new Set(this.context.project.features);
 
     return (
       <div>
@@ -272,7 +266,6 @@ export default class ProjectKeys extends AsyncView {
           {this.state.keyList.map(key => {
             return (
               <KeyRow
-                features={features}
                 api={this.api}
                 routes={routes}
                 params={params}

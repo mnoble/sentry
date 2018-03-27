@@ -764,7 +764,6 @@ SENTRY_FEATURES = {
     'projects:rate-limits': True,
     'projects:discard-groups': False,
     'projects:custom-inbound-filters': False,
-    'projects:minidump': False,
 }
 
 # Default time zone for localization in the UI.
