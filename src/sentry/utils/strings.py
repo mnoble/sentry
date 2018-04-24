@@ -192,3 +192,11 @@ def codec_lookup(encoding, default='utf-8'):
         return _get_default()
 
     return info
+
+
+def dasherize(string):
+    string = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1-\2', string)
+    string = re.sub(r'([a-z\d])([A-Z])', r'\1-\2', string)
+    string = string.replace(' ', '-')
+    string = string.replace('_', '-')
+    return string.lower()
