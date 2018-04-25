@@ -76,6 +76,15 @@ class User(BaseModel, AbstractBaseUser):
             'password on next sign in.'
         )
     )
+    is_sentry_app = models.BooleanField(
+        _('sentry app'),
+        default=False,
+        help_text=_(
+            'Designates whether this user is a proxy for a Sentry App.'
+            'Proxy users are not real humans and cannot login. They are'
+            'used to associate user-centric resources to a Sentry App.'
+        ),
+    )
     last_password_change = models.DateTimeField(
         _('date of last password change'),
         null=True,

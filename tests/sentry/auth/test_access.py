@@ -1,10 +1,12 @@
 from __future__ import absolute_import
 
 from django.contrib.auth.models import AnonymousUser
-from mock import Mock
 
 from sentry.auth import access
-from sentry.models import AuthProvider, AuthIdentity, Organization
+from sentry.models import (
+    AuthProvider, AuthIdentity, Organization, SentryApp, SentryAppInstallation,
+    ApiApplication, ApiAuthorization,
+)
 from sentry.testutils import TestCase
 
 
@@ -154,11 +156,50 @@ class FromUserTest(TestCase):
         assert result is access.DEFAULT
 
 
-class DefaultAccessTest(TestCase):
+class FromSentryAppTest(TestCase):
+    def setUp(self):
+        # Partner's normal Sentry account.
+        self.partner = self.create_user('integration@example.com')
+
+        # Proxy user to represent the SentryApp in associations
+        self.proxy_user = self.create_user('proxy@example.com')
+
+        self.api_app = ApiApplication.objects.create(owner=self.proxy_user)
+        self.authorization = ApiAuthorization.objects.create(
+            user=self.proxy_user,
+            application=self.api_app,
+        )
+
+        # TODO(mn): move creation logic into Mediator and use that here
+        # instead of all this manual setup.
+
+        self.sentry_app = SentryApp.objects.create(
+            name='slowdb',
+            owner=self.partner,
+            proxy_user=self.proxy_user,
+            application=self.api_app,
+        )
+
+        self.org = self.create_organization()
+        self.out_of_scope_org = self.create_organization()
+
+        self.team = self.create_team(organization=self.org)
+        self.out_of_scope_team = self.create_team(
+            organization=self.out_of_scope_org
+        )
+
+        SentryAppInstallation.objects.create(
+            organization=self.org,
+            sentry_app=self.sentry_app,
+            authorization=self.authorization,
+        )
+
+    def test_has_access(self):
+        result = access.from_sentry_app(self.proxy_user, self.org)
+        assert result.is_active
+        assert result.has_team_access(self.team)
+
     def test_no_access(self):
-        result = access.DEFAULT
+        result = access.from_sentry_app(self.proxy_user, self.out_of_scope_org)
         assert not result.is_active
-        assert result.sso_is_valid
-        assert not result.scopes
-        assert not result.has_team_access(Mock())
-        assert not result.has_team_membership(Mock())
+        assert not result.has_team_access(self.out_of_scope_team)

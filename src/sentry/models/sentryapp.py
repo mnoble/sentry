@@ -6,7 +6,7 @@ from django.utils import timezone
 from uuid import uuid4
 
 from sentry.db.models import (ArrayField, Model, FlexibleForeignKey)
-from sentry.models import ApiScopes
+from sentry.models import ApiScopes, Organization
 from sentry.utils.strings import dasherize
 
 
@@ -41,9 +41,41 @@ class SentryApp(Model):
         app_label = 'sentry'
         db_table = 'sentry_sentryapp'
 
+    @property
+    def organizations(self):
+        if not self.id:
+            return Organization.objects.none()
+
+        return Organization \
+            .objects \
+            .select_related('sentryappinstallation') \
+            .filter(sentryappinstallation__sentry_app_id=self.id)
+
+    @property
+    def teams(self):
+        # (mn): for some reason this can't be loaded up top
+        from sentry.models import Team
+
+        if not self.id:
+            return Team.objects.none()
+
+        return Team.objects.filter(organization__in=self.organizations)
+
     def save(self, *args, **kwargs):
         self._set_slug()
         return super(SentryApp, self).save(*args, **kwargs)
+
+    def installed_to(self, organization=None, team=None):
+        if organization and team:
+            raise TypeError('Must only pass organization OR team')
+
+        if organization:
+            return self.organizations.filter(id=organization.id).exists()
+
+        if team:
+            return self.teams.filter(id=team.id).exists()
+
+        return False
 
     def _set_slug(self):
         """
