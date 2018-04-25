@@ -1,16 +1,19 @@
 from __future__ import absolute_import
 
-from bitfield import BitField
 from django.db import models
 from django.utils import timezone
 from uuid import uuid4
 
-from sentry.db.models import (ArrayField, Model, FlexibleForeignKey)
-from sentry.models import ApiScopes, Organization
+from sentry.db.models import (Model, FlexibleForeignKey)
+from sentry.models import HasApiScopes, Organization
 from sentry.utils.strings import dasherize
 
 
-class SentryApp(Model):
+def has_api_scopes(klass):
+    pass
+
+
+class SentryApp(Model, HasApiScopes):
     __core__ = True
 
     application = FlexibleForeignKey('sentry.ApiApplication')
@@ -23,10 +26,6 @@ class SentryApp(Model):
     # The owner is an actual Sentry User who created the SentryApp. Used to
     # determine who can manage the SentryApp itself.
     owner = FlexibleForeignKey('sentry.User', related_name='owner_set')
-
-    # The set of OAuth scopes necessary for this integration to function.
-    scopes = BitField(flags=ApiScopes().to_bitfield())
-    scope_list = ArrayField(of=models.TextField())
 
     name = models.TextField()
     slug = models.TextField()
