@@ -140,6 +140,8 @@ from .endpoints.release_deploys import ReleaseDeploysEndpoint
 from .endpoints.dsym_files import DSymFilesEndpoint, \
     UnknownDSymFilesEndpoint, AssociateDSymFilesEndpoint
 from .endpoints.dif_files import DifAssembleEndpoint
+from .endpoints.sentry_apps import SentryAppsEndpoint
+from .endpoints.sentry_app_details import SentryAppDetailsEndpoint
 from .endpoints.shared_group_details import SharedGroupDetailsEndpoint
 from .endpoints.system_health import SystemHealthEndpoint
 from .endpoints.system_options import SystemOptionsEndpoint
@@ -1017,6 +1019,19 @@ urlpatterns = patterns(
         r'^wizard/(?P<wizard_hash>[^\/]+)/$',
         SetupWizard.as_view(),
         name='sentry-api-0-project-wizard'
+    ),
+
+    # Sentry Apps
+    url(
+        r'^sentry-apps/$',
+        SentryAppsEndpoint.as_view(),
+        name='sentry-api-0-sentry-apps'
+    ),
+
+    url(
+        r'^sentry-apps/(?P<slug>[^\/]+)/$',
+        SentryAppDetailsEndpoint.as_view(),
+        name='sentry-api-0-sentry-app-details'
     ),
 
     # Catch all

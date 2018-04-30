@@ -2,6 +2,8 @@ from __future__ import absolute_import
 
 import six
 
+from django.utils.functional import SimpleLazyObject
+
 from sentry.mediators import Param
 from sentry.models import User
 from sentry.testutils import TestCase
@@ -57,3 +59,7 @@ class TestParam(TestCase):
         target = Target()
         name = Param(six.string_types, default=lambda self: self.user['name'])
         assert name.default(target) == 'Pete'
+
+    def test_unwrapping_lazy_objects(self):
+        user = Param('sentry.models.user.User')
+        user.validate(None, 'user', SimpleLazyObject(User()))

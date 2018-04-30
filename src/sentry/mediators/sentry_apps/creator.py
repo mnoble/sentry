@@ -6,7 +6,7 @@ from collections import Iterable
 from django.db import transaction
 
 from sentry.mediators import Mediator, Param
-from sentry.models import (ApiApplication, SentryApp, User)
+from sentry.models import ApiApplication, SentryApp, User
 
 
 class Creator(Mediator):

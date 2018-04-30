@@ -127,6 +127,10 @@ class Param(object):
         return True
 
     def _type_match(self, value):
+        # Unwrap Lazy objects like ``request.user``, for example.
+        if hasattr(value, '_wrapped'):
+            value = value._wrapped
+
         if isinstance(self.type, six.string_types):
             return self._value_type(value) == self.type
 

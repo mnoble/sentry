@@ -9,10 +9,6 @@ from sentry.models import HasApiScopes, Organization
 from sentry.utils.strings import dasherize
 
 
-def has_api_scopes(klass):
-    pass
-
-
 class SentryApp(Model, HasApiScopes):
     __core__ = True
 
