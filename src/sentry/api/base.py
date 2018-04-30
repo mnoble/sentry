@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from sentry import tsdb
-from sentry.app import raven
+from sentry.app import env, raven
 from sentry.auth import access
 from sentry.models import Environment
 from sentry.utils.cursors import Cursor
@@ -123,6 +123,12 @@ class Endpoint(APIView):
         request = self.initialize_request(request, *args, **kwargs)
         self.request = request
         self.headers = self.default_response_headers  # deprecate?
+
+        # Some serializers return `access` information and they do so by using
+        # ``sentry.app.env``. That gets set early in the middleware stack which
+        # means it doesn't have the logged in ``user`` or ``auth``. Set it here
+        # so those serializers can access this info.
+        env.request = request
 
         if settings.SENTRY_API_RESPONSE_DELAY:
             time.sleep(settings.SENTRY_API_RESPONSE_DELAY / 1000.0)

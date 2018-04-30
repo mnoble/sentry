@@ -215,7 +215,7 @@ def from_sentry_app(user, organization=None):
         return NoAccess()
 
     return Access(
-        scopes=sentry_app.scopes,
+        scopes=sentry_app.scope_list,
         is_active=True,
         teams=list(sentry_app.teams.all()),
         memberships=(),

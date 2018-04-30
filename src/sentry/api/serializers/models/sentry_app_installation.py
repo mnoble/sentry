@@ -26,7 +26,7 @@ class SentryAppInstallationSerializer(Serializer):
         if grant:
             data['grant'] = {
                 'code': grant.code,
-                'expires_at': grant.expires_at,
+                'expires_at': six.binary_type(grant.expires_at),
             }
 
         return data

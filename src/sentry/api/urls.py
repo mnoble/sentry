@@ -141,6 +141,8 @@ from .endpoints.dsym_files import DSymFilesEndpoint, \
     UnknownDSymFilesEndpoint, AssociateDSymFilesEndpoint
 from .endpoints.dif_files import DifAssembleEndpoint
 from .endpoints.sentry_apps import SentryAppsEndpoint
+from .endpoints.sentry_app_installation_authorizations import \
+    SentryAppInstallationAuthorizationsEndpoint
 from .endpoints.sentry_app_details import SentryAppDetailsEndpoint
 from .endpoints.sentry_app_installations import SentryAppInstallationsEndpoint
 from .endpoints.shared_group_details import SharedGroupDetailsEndpoint
@@ -1033,6 +1035,12 @@ urlpatterns = patterns(
         r'^sentry-apps/(?P<slug>[^\/]+)/$',
         SentryAppDetailsEndpoint.as_view(),
         name='sentry-api-0-sentry-app-details'
+    ),
+
+    url(
+        r'^sentry-app-installations/(?P<uuid>[^\/]+)/authorizations$',
+        SentryAppInstallationAuthorizationsEndpoint.as_view(),
+        name='sentry-api-0-sentry-app-installation-authorizations'
     ),
 
     url(

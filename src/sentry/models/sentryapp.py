@@ -12,7 +12,8 @@ from sentry.utils.strings import dasherize
 class SentryApp(Model, HasApiScopes):
     __core__ = True
 
-    application = FlexibleForeignKey('sentry.ApiApplication')
+    application = models.OneToOneField('sentry.ApiApplication',
+                                       related_name='sentry_app')
 
     # Much of the OAuth system in place currently depends on a User existing.
     # This "proxy user" represents the SentryApp in those cases.

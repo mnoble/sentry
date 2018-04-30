@@ -61,6 +61,18 @@ class ApiToken(Model, HasApiScopes):
                 scope_list=grant.get_scopes(),
             )
 
+    def get_scopes(self):
+        """
+        If this token belongs to a SentryApp, we want to use its scopes. If the
+        Sentry App ever gains new scopes, for whatever reason, we don't have to
+        update all ApiTokens individually.
+        """
+        if hasattr(self, 'application') and \
+                hasattr(self.application, 'sentry_app'):
+            return self.application.sentry_app.scope_list
+        else:
+            return super(ApiToken, self).get_scopes()
+
     def is_expired(self):
         if not self.expires_at:
             return False
