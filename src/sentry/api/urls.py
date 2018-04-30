@@ -142,6 +142,7 @@ from .endpoints.dsym_files import DSymFilesEndpoint, \
 from .endpoints.dif_files import DifAssembleEndpoint
 from .endpoints.sentry_apps import SentryAppsEndpoint
 from .endpoints.sentry_app_details import SentryAppDetailsEndpoint
+from .endpoints.sentry_app_installations import SentryAppInstallationsEndpoint
 from .endpoints.shared_group_details import SharedGroupDetailsEndpoint
 from .endpoints.system_health import SystemHealthEndpoint
 from .endpoints.system_options import SystemOptionsEndpoint
@@ -1032,6 +1033,12 @@ urlpatterns = patterns(
         r'^sentry-apps/(?P<slug>[^\/]+)/$',
         SentryAppDetailsEndpoint.as_view(),
         name='sentry-api-0-sentry-app-details'
+    ),
+
+    url(
+        r'^organizations/(?P<organization_id>\d+)/sentry-app-installations',
+        SentryAppInstallationsEndpoint.as_view(),
+        name='sentry-api-0-sentry-app-installations'
     ),
 
     # Catch all
