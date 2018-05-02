@@ -226,6 +226,30 @@ const accountSettingsRoutes = (
           component={errorHandler(LazyLoad)}
         />
       </Route>
+
+      <Route path="sentry-apps/" name="Sentry Apps">
+        <IndexRoute
+          componentPromise={() =>
+            import(/*webpackChunkName: "SentryApps"*/ './views/settings/account/sentryApps')}
+          component={errorHandler(LazyLoad)}
+        />
+
+        <Route
+          path="new/"
+          name="New Sentry App"
+          componentPromise={() =>
+            import(/*webpackChunkName: "NewSentryApp"*/ './views/settings/account/sentryAppNew')}
+          component={errorHandler(LazyLoad)}
+        />
+
+        <Route
+          path=":slug/"
+          name="Sentry App Details"
+          componentPromise={() =>
+            import(/*webpackChunkName: "SentryAppDetails"*/ './views/settings/account/sentryAppDetails')}
+          component={errorHandler(LazyLoad)}
+        />
+      </Route>
     </Route>
 
     <Route
