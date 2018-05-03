@@ -436,7 +436,7 @@ CELERY_IMPORTS = (
     'sentry.tasks.process_buffer', 'sentry.tasks.reports', 'sentry.tasks.reprocessing',
     'sentry.tasks.scheduler', 'sentry.tasks.signals', 'sentry.tasks.store', 'sentry.tasks.unmerge',
     'sentry.tasks.symcache_update', 'sentry.tasks.servicehooks',
-    'sentry.tagstore.tasks', 'sentry.tasks.assemble'
+    'sentry.tagstore.tasks', 'sentry.tasks.assemble', 'sentry.tasks.sentry_app_install_webhook',
 )
 CELERY_QUEUES = [
     Queue('activity.notify', routing_key='activity.notify'),
@@ -463,6 +463,7 @@ CELERY_QUEUES = [
     Queue('reports.deliver', routing_key='reports.deliver'),
     Queue('reports.prepare', routing_key='reports.prepare'),
     Queue('search', routing_key='search'),
+    Queue('sentry_apps.webhook', routing_key='sentry_apps.webhook'),
     Queue('stats', routing_key='stats'),
     Queue('unmerge', routing_key='unmerge'),
     Queue('update', routing_key='update'),
