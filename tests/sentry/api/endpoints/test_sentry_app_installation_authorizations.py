@@ -81,7 +81,7 @@ class TestSentryAppInstallationAuthorizationsEndpoint(APITestCase):
             client_id=app.client_id,
             client_secret=app.client_secret,
         )
-        assert response.status_code == 403
+        assert response.status_code == 401
 
     def test_invalid_grant(self):
         response = self.run_request(code='123')

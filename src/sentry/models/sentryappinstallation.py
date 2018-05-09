@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 
 from django.db import models
-from django.db.models import Manager
 from django.db.models.query import QuerySet
 from django.utils import timezone
 from uuid import uuid4
 
+from sentry.db.models.manager import BaseManager
 from sentry.db.models import (Model, FlexibleForeignKey)
 
 
@@ -14,7 +14,7 @@ class ParanoidQuerySet(QuerySet):
         self.update(date_deleted=timezone.now())
 
 
-class ParanoidManager(Manager):
+class ParanoidManager(BaseManager):
     def get_queryset(self):
         return ParanoidQuerySet(self.model, using=self._db).filter(
             date_deleted__isnull=True)

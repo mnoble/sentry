@@ -12,8 +12,6 @@ from sentry.models import Organization
 
 
 class SentryAppInstallationsEndpoint(Endpoint):
-    permission_classes = ()
-
     def post(self, request, organization_id):
         serializer = SentryAppInstallationSerializer(data=request.DATA)
 
