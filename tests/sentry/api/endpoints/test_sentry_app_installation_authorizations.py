@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import six
+
 from datetime import timedelta
 from django.core.urlresolvers import reverse
 from django.utils import timezone
@@ -19,7 +21,7 @@ class TestSentryAppInstallationAuthorizationsEndpoint(APITestCase):
         self.sentry_app = SentryAppCreator.run(
             name='nulldb',
             user=self.user,
-            scopes=(),
+            scopes=('org:read', ),
             webhook_url='http://example.com',
         )
 
@@ -89,3 +91,18 @@ class TestSentryAppInstallationAuthorizationsEndpoint(APITestCase):
         self.grant.update(expires_at=timezone.now() - timedelta(minutes=2))
         response = self.run_request()
         assert response.status_code == 403
+
+    def test_access_token_request(self):
+        response = self.run_request()
+        token = response.data['token']
+
+        url = reverse('sentry-api-0-organization-details',
+                      args=[self.org.slug])
+
+        response = self.client.get(
+            url,
+            HTTP_AUTHORIZATION='Bearer {}'.format(token),
+        )
+
+        assert response.status_code == 200
+        assert response.data['id'] == six.binary_type(self.org.id)

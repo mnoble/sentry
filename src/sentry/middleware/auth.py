@@ -1,12 +1,10 @@
 from __future__ import absolute_import
 
-import json
-
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user as auth_get_user
 from django.utils.functional import SimpleLazyObject
 
-from sentry.models import ApiApplication, UserIP
+from sentry.models import UserIP
 from sentry.utils.linksign import process_signature
 from sentry.utils.auth import AuthUserPasswordExpired, logger
 
@@ -14,9 +12,6 @@ from sentry.utils.auth import AuthUserPasswordExpired, logger
 def get_user(request):
     if not hasattr(request, '_cached_user'):
         user = auth_get_user(request)
-
-        if isinstance(user, AnonymousUser) and is_sentry_app_request(request):
-            user = get_sentry_app_user(request)
 
         # If the user bound to this request matches a real user,
         # we need to validate the session's nonce. This nonce is
@@ -44,34 +39,6 @@ def get_user(request):
                 UserIP.log(user, request.META['REMOTE_ADDR'])
         request._cached_user = user
     return request._cached_user
-
-
-def is_sentry_app_request(request):
-    """
-    The token exchange Sentry Apps must go through require them to include
-    their Client ID and Secret in the request. When they're present, look up
-    and authenticate the proxy User using them.
-    """
-    return 'client_id' in request.body and 'client_secret' in request.body
-
-
-def get_sentry_app_user(request):
-    body = json.loads(request.body)
-    client_id = body.get('client_id')
-    client_secret = body.get('client_secret')
-
-    if client_id is None or client_secret is None:
-        return AnonymousUser()
-
-    application = ApiApplication.objects.get(client_id=client_id)
-
-    if not hasattr(application, 'sentry_app'):
-        return AnonymousUser()
-
-    if not application.client_secret == client_secret:
-        return AnonymousUser()
-
-    return application.sentry_app.proxy_user
 
 
 class AuthenticationMiddleware(object):
