@@ -17,3 +17,4 @@ class ApiScopesField(serializers.WritableField):
 class SentryAppSerializer(Serializer):
     name = serializers.CharField()
     scopes = ApiScopesField()
+    webhook_url = serializers.CharField()

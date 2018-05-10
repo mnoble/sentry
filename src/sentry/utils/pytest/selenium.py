@@ -180,6 +180,7 @@ class Browser(object):
         # TODO(dcramer): ideally this would take the executing test package
         # into account for duplicate names
         self.percy.snapshot(name=name)
+        self.driver.get_screenshot_as_file('./tests/acceptance/screenshots/{}.png'.format(name))
         return self
 
     def save_cookie(self, name, value, path='/', expires='Tue, 20 Jun 2025 19:07:44 GMT'):

@@ -15,12 +15,11 @@ class Updater(Mediator):
     scopes = Param(Iterable, required=False)
     webhook_url = Param(six.string_types, required=False)
 
+    @transaction.atomic
     def call(self):
         with self.log():
-            with transaction.atomic():
-                self._validate_only_added_scopes()
-                self._update_sentry_app()
-
+            self._validate_only_added_scopes()
+            self._update_sentry_app()
             return self.sentry_app
 
     def _validate_only_added_scopes(self):
@@ -28,13 +27,13 @@ class Updater(Mediator):
             raise ValidationError('Cannot remove `scopes` already in use.')
 
     def _update_sentry_app(self):
-        if self.name is not None:
+        if hasattr(self, 'name') and self.name is not None:
             self.sentry_app.name = self.name
 
-        if self.scopes is not None:
+        if hasattr(self, 'scopes') and self.scopes is not None:
             self.sentry_app.scope_list = self.scopes
 
-        if self.webhook_url is not None:
+        if hasattr(self, 'webhook_url') and self.webhook_url is not None:
             self.sentry_app.webhook_url = self.webhook_url
 
         self.sentry_app.save()

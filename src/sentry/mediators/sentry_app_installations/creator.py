@@ -16,13 +16,13 @@ class Creator(Mediator):
     organization = Param('sentry.models.organization.Organization')
     slug = Param(six.string_types)
 
+    @transaction.atomic
     def call(self):
         with self.log():
-            with transaction.atomic():
-                self._create_authorization()
-                self._create_api_grant()
-                self._create_install()
-                self._enqueue_webhook()
+            self._create_authorization()
+            self._create_api_grant()
+            self._create_install()
+            self._enqueue_webhook()
 
             return (self.install, self.api_grant)
 

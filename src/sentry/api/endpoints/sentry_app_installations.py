@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from sentry.api.base import Endpoint
+from sentry.api.base import Endpoint, SessionAuthentication
 from sentry.api.serializers import serialize
 from sentry.api.serializers.rest_framework import (
     SentryAppInstallationSerializer
@@ -12,6 +13,9 @@ from sentry.models import Organization
 
 
 class SentryAppInstallationsEndpoint(Endpoint):
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
     def post(self, request, organization_id):
         serializer = SentryAppInstallationSerializer(data=request.DATA)
 

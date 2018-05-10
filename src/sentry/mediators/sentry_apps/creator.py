@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import six
 
+
 from collections import Iterable
 from django.db import transaction
 
@@ -15,12 +16,12 @@ class Creator(Mediator):
     scopes = Param(Iterable)
     webhook_url = Param(six.string_types)
 
+    @transaction.atomic
     def call(self):
         with self.log():
-            with transaction.atomic():
-                self.proxy = self._create_proxy_user()
-                self.api_app = self._create_api_application()
-                self.app = self._create_sentry_app()
+            self.proxy = self._create_proxy_user()
+            self.api_app = self._create_api_application()
+            self.app = self._create_sentry_app()
             return self.app
 
     def _create_proxy_user(self):

@@ -13,6 +13,7 @@ class TestSentryAppInstallationsEndpoint(APITestCase):
             name='nulldb',
             user=self.create_user(),
             scopes=['project:read'],
+            webhook_url='http://example.com',
         )
 
         self.url = reverse('sentry-api-0-sentry-app-installations',

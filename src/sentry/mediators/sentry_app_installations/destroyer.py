@@ -10,12 +10,12 @@ class Destroyer(Mediator):
         'sentry.models.sentryappinstallation.SentryAppInstallation'
     )
 
+    @transaction.atomic
     def call(self):
         with self.log():
-            with transaction.atomic():
-                self._destroy_installation()
-                self._destroy_authorization()
-                self._destroy_grant()
+            self._destroy_installation()
+            self._destroy_authorization()
+            self._destroy_grant()
 
             return self.install
 

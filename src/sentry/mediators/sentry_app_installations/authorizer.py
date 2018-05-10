@@ -11,21 +11,22 @@ from sentry.utils.cache import memoize
 
 
 class Authorizer(Mediator):
+    install = Param(
+        'sentry.models.sentryappinstallation.SentryAppInstallation')
     grant_type = Param(six.string_types)
     code = Param(six.string_types)
     client_id = Param(six.string_types)
     user = Param('sentry.models.user.User')
-    install = Param('sentry.models.sentryappinstallation.SentryAppInstallation')
 
+    @transaction.atomic
     def call(self):
         with self.log():
-            with transaction.atomic():
-                self._validate_grant_type()
-                self._validate_install()
-                self._validate_sentry_app()
-                self._validate_grant()
+            self._validate_grant_type()
+            self._validate_install()
+            self._validate_sentry_app()
+            self._validate_grant()
 
-                return self.exchange()
+            return self.exchange()
 
     def exchange(self):
         return ApiToken.objects.create(

@@ -17,6 +17,10 @@ class SentryAppDetails extends AsyncView {
     router: PropTypes.object.isRequired,
   };
 
+  getTitle() {
+    return 'Sentry App Details';
+  }
+
   get title() {
     return this.state.app.name;
   }

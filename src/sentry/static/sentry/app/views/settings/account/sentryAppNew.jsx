@@ -2,7 +2,7 @@ import {Box} from 'grid-emotion';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import {addErrorMessage} from 'app/actionCreators/indicator';
+import {addErrorMessage, addSuccessMessage} from 'app/actionCreators/indicator';
 import ApiScopesField from 'app/views/settings/components/forms/apiScopesField';
 import AsyncView from 'app/views/asyncView';
 import Form from 'app/views/settings/components/forms/form';
@@ -44,6 +44,7 @@ class NewSentryApp extends AsyncView {
         webhook_url: data.webhook_url,
       },
       success: app => {
+        addSuccessMessage('Sentry App created.');
         this.context.router.push(`/settings/account/api/sentry-apps/${app.slug}`);
       },
       error: error => {
