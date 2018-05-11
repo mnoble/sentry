@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from sentry.api.base import Endpoint, SessionAuthentication
+from sentry.api.paginator import OffsetPaginator
 from sentry.api.serializers import serialize
 from sentry.api.serializers.rest_framework import (
     SentryAppInstallationSerializer
@@ -16,7 +17,18 @@ class SentryAppInstallationsEndpoint(Endpoint):
     authentication_classes = (SessionAuthentication, )
     permission_classes = (IsAuthenticated, )
 
-    def post(self, request, organization_id):
+    def get(self, request, organization_slug):
+        org = Organization.objects.get(slug=organization_slug)
+
+        return self.paginate(
+            request=request,
+            queryset=org.sentry_app_installations.all(),
+            order_by='date_added',
+            paginator_cls=OffsetPaginator,
+            on_results=lambda s: serialize(s),
+        )
+
+    def post(self, request, organization_slug):
         serializer = SentryAppInstallationSerializer(data=request.DATA)
 
         # TODO(mn): Move validation logic into the mediator once the API has
@@ -24,7 +36,7 @@ class SentryAppInstallationsEndpoint(Endpoint):
         if not serializer.is_valid():
             return Response({'errors': serializer.errors}, status=422)
 
-        org = Organization.objects.get(id=organization_id)
+        org = Organization.objects.get(slug=organization_slug)
 
         install, grant = Creator.run(
             organization=org,

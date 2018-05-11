@@ -36,6 +36,16 @@ describe('PluginNavigation Integration', function() {
       url: `/projects/${org.slug}/${project.slug}/plugins/github/`,
       method: 'DELETE',
     });
+    MockApiClient.addMockResponse({
+      url: '/sentry-apps/',
+      method: 'GET',
+      body: [],
+    });
+    MockApiClient.addMockResponse({
+      url: '/organizations/org-slug/sentry-app-installations/',
+      method: 'GET',
+      body: [],
+    });
   });
 
   // Integration test with PluginNavigation

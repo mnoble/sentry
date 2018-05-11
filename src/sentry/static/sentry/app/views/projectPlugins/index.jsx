@@ -5,6 +5,7 @@ import {fetchPlugins, enablePlugin, disablePlugin} from 'app/actionCreators/plug
 import withPlugins from 'app/utils/withPlugins';
 import ProjectPlugins from 'app/views/projectPlugins/projectPlugins';
 import OrganizationIntegrations from 'app/views/projectPlugins/organizationIntegrations';
+import SentryApps from 'app/views/sentryApps/sentryApps';
 import SentryTypes from 'app/proptypes';
 import SettingsPageHeader from 'app/views/settings/components/settingsPageHeader';
 
@@ -38,6 +39,8 @@ class ProjectPluginsContainer extends React.Component {
           orgId={this.props.params.orgId}
           projectId={this.props.params.projectId}
         />
+
+        <SentryApps orgId={this.props.params.orgId} />
 
         <ProjectPlugins
           {...this.props}

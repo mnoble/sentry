@@ -1038,13 +1038,13 @@ urlpatterns = patterns(
     ),
 
     url(
-        r'^sentry-app-installations/(?P<uuid>[^\/]+)/authorizations$',
+        r'^sentry-app-installations/(?P<uuid>[^\/]+)/authorizations/$',
         SentryAppInstallationAuthorizationsEndpoint.as_view(),
         name='sentry-api-0-sentry-app-installation-authorizations'
     ),
 
     url(
-        r'^organizations/(?P<organization_id>\d+)/sentry-app-installations',
+        r'^organizations/(?P<organization_slug>[^\/]+)/sentry-app-installations/$',
         SentryAppInstallationsEndpoint.as_view(),
         name='sentry-api-0-sentry-app-installations'
     ),

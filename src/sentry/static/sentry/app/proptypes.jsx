@@ -260,6 +260,17 @@ export const PluginsStore = PropTypes.shape({
   pageLinks: PropTypes.any,
 });
 
+export const SentryApp = {
+  uuid: PropTypes.string,
+  name: PropTypes.string,
+  slug: PropTypes.string,
+  scopes: PropTypes.arrayOf(PropTypes.string),
+  webhook_url: PropTypes.string,
+  installed: PropTypes.bool,
+};
+
+export const SentryAppShape = PropTypes.shape(SentryApp);
+
 export const ProjectDsn = {
   secret: PropTypes.string,
   minidump: PropTypes.string,

@@ -28,7 +28,8 @@ class SentryAppInstallation(Model):
     # SentryApp's are installed and scoped to an Organization. They will have
     # access, defined by their scopes, to Teams, Projects, etc. under that
     # Organization, implicitly.
-    organization = FlexibleForeignKey('sentry.Organization')
+    organization = FlexibleForeignKey('sentry.Organization',
+                                      related_name='sentry_app_installations')
 
     # Each installation gets associated with an instance of ApiAuthorization.
     authorization = FlexibleForeignKey('sentry.ApiAuthorization',

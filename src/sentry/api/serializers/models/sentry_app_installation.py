@@ -8,7 +8,7 @@ from sentry.models import SentryAppInstallation
 
 @register(SentryAppInstallation)
 class SentryAppInstallationSerializer(Serializer):
-    def serialize(self, install, _, grant=None):
+    def serialize(self, install, attrs, _, grant=None):
         data = {
             'sentry_app': {
                 'uuid': install.sentry_app.uuid,

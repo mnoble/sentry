@@ -46,6 +46,16 @@ describe('ProjectPluginsContainer', function() {
       url: `/projects/${org.slug}/${project.slug}/plugins/github/`,
       method: 'DELETE',
     });
+    MockApiClient.addMockResponse({
+      url: '/sentry-apps/',
+      method: 'GET',
+      body: [],
+    });
+    MockApiClient.addMockResponse({
+      url: '/organizations/org-slug/sentry-app-installations/',
+      method: 'GET',
+      body: [],
+    });
     wrapper = mount(
       <ProjectPlugins params={params} organization={organization} />,
       routerContext
