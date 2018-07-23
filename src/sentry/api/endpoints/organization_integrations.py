@@ -12,12 +12,21 @@ class OrganizationIntegrationsEndpoint(OrganizationEndpoint):
     permission_classes = (OrganizationIntegrationsPermission, )
 
     def get(self, request, organization):
-        integrations = OrganizationIntegration.objects.filter(organization=organization)
+        integrations = OrganizationIntegration.objects.filter(
+            organization=organization
+        )
 
         if 'provider_key' in request.GET:
-            integrations = integrations.filter(
-                integration__provider=request.GET['provider_key']
-            )
+            provider_key = request.GET['provider_key']
+
+            if provider_key == 'vsts':
+                integrations = integrations.filter(
+                    integration__provider__in=('vsts', 'vsts-extension'),
+                )
+            else:
+                integrations = integrations.filter(
+                    integration__provider=provider_key,
+                )
 
         return self.paginate(
             queryset=integrations,

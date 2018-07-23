@@ -206,6 +206,7 @@ def register_extensions():
     from sentry.integrations.jira import JiraIntegrationProvider
     from sentry.integrations.slack import SlackIntegrationProvider
     from sentry.integrations.vsts import VstsIntegrationProvider
+    from sentry.integrations.vsts_extension import VstsExtensionIntegrationProvider
     integrations.register(BitbucketIntegrationProvider)
     integrations.register(ExampleIntegrationProvider)
     integrations.register(GitHubIntegrationProvider)
@@ -213,6 +214,7 @@ def register_extensions():
     integrations.register(JiraIntegrationProvider)
     integrations.register(SlackIntegrationProvider)
     integrations.register(VstsIntegrationProvider)
+    integrations.register(VstsExtensionIntegrationProvider)
 
     from sentry.plugins import bindings
     from sentry.plugins.providers.dummy import DummyRepositoryProvider
